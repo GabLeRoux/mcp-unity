@@ -49,7 +49,16 @@ public class GetScenesHierarchyResource : McpResourceBase
             JArray rootObjectsArray = new JArray();
             
             // Get all loaded scenes
-            int sceneCount = SceneManager.loadedSceneCount;
+            int sceneCount;
+
+            // On newer Unity versions, use loadedSceneCount (if available).
+            // On older ones like 2021.3, fall back to sceneCount.
+#if UNITY_6000_0_OR_NEWER
+            sceneCount = SceneManager.loadedSceneCount;
+#else
+            sceneCount = SceneManager.sceneCount;
+#endif
+
             for (int i = 0; i < sceneCount; i++)
             {
                 Scene scene = SceneManager.GetSceneAt(i);
