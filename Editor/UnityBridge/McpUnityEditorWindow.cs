@@ -194,15 +194,22 @@ namespace McpUnity.Unity
                 {
                     EditorGUILayout.BeginVertical(_connectedClientBoxStyle); // Use green background for each client
                     
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("ID:", _connectedClientLabelStyle, GUILayout.Width(50));                    
-                    EditorGUILayout.LabelField(client.Key, EditorStyles.boldLabel);
-                    EditorGUILayout.EndHorizontal();
+                    // Check if we have a meaningful client name (not empty and not the fallback)
+                    string clientName = client.Value;
+                    bool hasMeaningfulName = !string.IsNullOrEmpty(clientName) 
+                        && !clientName.Equals("Unknown MCP Client", StringComparison.OrdinalIgnoreCase);
                     
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.LabelField("Name:", _connectedClientLabelStyle, GUILayout.Width(50));
-                    EditorGUILayout.LabelField(client.Value, _connectedClientLabelStyle);
-                    EditorGUILayout.EndHorizontal();
+                    if (hasMeaningfulName)
+                    {
+                        // Show name prominently when available
+                        EditorGUILayout.LabelField(clientName, EditorStyles.boldLabel);
+                        EditorGUILayout.LabelField($"ID: {client.Key}", _connectedClientLabelStyle);
+                    }
+                    else
+                    {
+                        // Show just the ID when no meaningful name is available
+                        EditorGUILayout.LabelField($"Client: {client.Key}", EditorStyles.boldLabel);
+                    }
                     
                     EditorGUILayout.EndVertical();
                     EditorGUILayout.Space();
@@ -265,6 +272,14 @@ namespace McpUnity.Unity
             EditorGUILayout.Space();
 
             ShowConfigButton("GitHub Copilot", McpUtils.AddToGitHubCopilotConfig);
+
+            EditorGUILayout.Space();
+
+            ShowConfigButton("Codex CLI", McpUtils.AddToCodexCliConfig);
+
+            EditorGUILayout.Space();
+
+            ShowConfigButton("Google Antigravity", McpUtils.AddToAntigravityConfig);
 
             EditorGUILayout.Separator();
             EditorGUILayout.Separator();
